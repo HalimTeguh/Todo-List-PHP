@@ -1,14 +1,20 @@
 <?php
 
-require_once __DIR__ . "/Model/Todo.php";
-require_once __DIR__ . "/BusinessModel/AddTodoList.php";
-require_once __DIR__ . "/BusinessModel/RemoveTodoList.php";
-require_once __DIR__ . "/BusinessModel/ShowTodoList.php";
-require_once __DIR__ . "/View/ViewShowTodoList.php";
-require_once __DIR__ . "/View/ViewAddTodoList.php";
-require_once __DIR__ . "/View/ViewRemoveTodoList.php";
+require_once __DIR__ . "\Entity\TodoList.php";
+require_once __DIR__ . "\Helper\InputHelper.php";
+require_once __DIR__ . "\Repository\TodoListRepository.php";
+require_once __DIR__ . "\Services\TodoListServices.php";
+require_once __DIR__ . "\View\TodoListView.php";
+
+use Repository\TodoListRepositoryImpl;
+use Services\TodoListServicesImpl;
+use View\TodoListView;
 
 
 echo "APLIKASI TODO LIST" . PHP_EOL;
 
-ViewShowTodoList();
+$todoListRepository = new TodoListRepositoryImpl();
+$todoListServices = new TodoListServicesImpl($todoListRepository);
+$todoListView = new TodoListView($todoListServices);
+
+$todoListView->ShowTodoList();
