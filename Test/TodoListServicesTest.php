@@ -3,6 +3,8 @@
 require_once __DIR__ . "\..\Entity\TodoList.php";
 require_once __DIR__ . "\..\Repository\TodoListRepository.php";
 require_once __DIR__ . "\..\Services\TodoListServices.php";
+require_once __DIR__ . "\..\Config\Database.php";
+
 
 use Entity\TodoList;
 use Repository\TodoListRepositoryImpl;
@@ -10,43 +12,39 @@ use Services\TodoListServicesImpl;
 
 function testShowTodoList()
 {
-    $todoListRepository = new TodoListRepositoryImpl();
-    $todoListServices = new TodoListServicesImpl($todoListRepository);
+    $connection = \Config\Database::getConnection();
 
-    $todoListRepository->todolist[1] = "Belajar PHP Dasar";
-    $todoListRepository->todolist[2] = "Belajar PHP OOP";
-    $todoListRepository->todolist[3] = "Belajar PHP Database";
+    $todoListRepository = new TodoListRepositoryImpl($connection);
+    $todoListServices = new TodoListServicesImpl($todoListRepository);
 
     $todoListServices->ShowTodoList();
 }
 
 function testAddTodoList()
 {
-    $todoListRepository = new TodoListRepositoryImpl();
+    $connection = \Config\Database::getConnection();
+    $todoListRepository = new TodoListRepositoryImpl($connection);
     $todoListServices = new TodoListServicesImpl($todoListRepository);
 
     $todoListServices->AddTodoList("Belajar PHP");
     $todoListServices->AddTodoList("Belajar PHP OOP");
     $todoListServices->AddTodoList("Belajar PHP Database");
 
-    $todoListServices->ShowTodoList();
+    //$todoListServices->ShowTodoList();
 }
 
 function testRemoveTodoList()
 {
-    $todoListRepository = new TodoListRepositoryImpl();
-    $todoListServices = new TodoListServicesImpl($todoListRepository);
-    $todoListServices->AddTodoList("Belajar PHP");
-    $todoListServices->AddTodoList("Belajar PHP OOP");
-    $todoListServices->AddTodoList("Belajar PHP Database");
+    $connection = \Config\Database::getConnection();
 
-    $todoListServices->ShowTodoList();
+    $todoListRepository = new TodoListRepositoryImpl($connection);
+    $todoListServices = new TodoListServicesImpl($todoListRepository);
 
     $todoListServices->RemoveTodoList(2);
+    //$todoListServices->ShowTodoList();
 
-    $todoListServices->ShowTodoList();
+
 }
 
 
-
-testRemoveTodoList();
+testShowTodoList();

@@ -20,30 +20,55 @@ namespace Repository {
 
         public array $todolist = array();
 
+        private \PDO $connection;
+
+        public function __construct(\PDO $connection)
+        {
+            $this->connection = $connection;
+        }
+
         public function save(TodoList $input): void
         {
-            $number = sizeof($this->todolist) + 1;
-
-            $this->todolist[$number] = $input;
+            $sql = "INSERT INTO todolist (todo) VALUES (?)";
+            $statment = $this->connection->prepare($sql);
+            $statment->execute([$input->getTodo()]);
         }
 
         public function remove(int $number): bool
         {
-            if ($number > sizeof($this->todolist)) {
-                return False;
+            $sql = "SELECT * FROM todolist WHERE id = ?";
+            $statement = $this->connection->prepare($sql);
+            $statement->execute([$number]);
+
+            if ($statement->fetch()) {
+                $sql = "DELETE FROM todolist WHERE id = ?";
+                $statment = $this->connection->prepare($sql);
+                return $statment->execute([$number]);
             } else {
-                for ($number; $number < sizeof($this->todolist); $number++) {
-                    $this->todolist[$number] = $this->todolist[$number + 1];
-                }
-                unset($this->todolist[$number]);
-                return true;
+                return false;
             }
+
         }
 
 
         public function findAll(): array
         {
-            return $this->todolist;
+            $sql = "SELECT id, todo FROM todolist";
+
+            $statement = $this->connection->prepare($sql);
+            $statement->execute();
+
+            $result = [];
+
+            foreach ($statement as $row) {
+                $todolist = new TodoList();
+                $todolist->setId($row["id"]);
+                $todolist->setTodo($row["todo"]);
+
+                $result[$todolist->getId()] = $todolist;
+            }
+
+            return $result;
         }
     }
 
